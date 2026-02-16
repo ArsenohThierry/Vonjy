@@ -49,10 +49,10 @@ return [
 	 **************************************/
 	'database' => [
 		// MySQL Example:
-	 'host'     => 'localhost',      // Database host (e.g., 'localhost', 'db.example.com')
+	 'host'     => '127.0.0.1',      // Database host (use 127.0.0.1 instead of localhost to avoid socket issues)
 	 'dbname'   => 'vonjy',   // Database name (e.g., 'flightphp')
-	 'user'     => 'vonjy',  // Database user (e.g., 'root')
-	 'password' => 'vonjy',  // Database password (never commit real passwords)
+	 'user'     => 'root',  // Database user (e.g., 'root')
+	 'password' => '',  // Database password (never commit real passwords)
 
 		// SQLite Example:
 		// 'file_path' => __DIR__ . $ds . '..' . $ds . 'database.sqlite', // Path to SQLite file

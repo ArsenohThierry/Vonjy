@@ -214,8 +214,9 @@ body {
 
 .stat-mini-item {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
     padding-right: 1.5rem;
     border-right: 2px solid var(--accent-light);
 }
@@ -240,6 +241,29 @@ body {
     background: var(--reste-vert-light);
     padding: 0.2rem 0.8rem;
     border-radius: 30px;
+}
+
+.filter-select {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    border: 2px solid var(--accent-light);
+    background: var(--neutral-panel);
+    color: var(--primary-deep);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-select:hover {
+    border-color: var(--primary-medium);
+    background: white;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-medium);
+    background: white;
 }
 
 /* ========== TABLEAU ========== */
@@ -478,6 +502,155 @@ body {
     color: var(--neutral-gray);
     font-size: 0.85rem;
     font-style: italic;
+}
+
+/* ========== BOUTONS D'ACTION (CRUD) ========== */
+:root {
+    --pastel-edit-bg: #F0F5FA;
+    --pastel-edit-border: #C2D9E8;
+    --pastel-edit-text: #4A6B7C;
+    --pastel-delete-bg: #FDF0F0;
+    --pastel-delete-border: #F5D0D0;
+    --pastel-delete-text: #8B5A5A;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border: 1px solid;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.action-btn .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.edit-btn {
+    background-color: var(--pastel-edit-bg);
+    color: var(--pastel-edit-text);
+    border-color: var(--pastel-edit-border);
+}
+
+.edit-btn:hover {
+    background-color: #E5EEF5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(74, 107, 124, 0.15);
+}
+
+.delete-btn {
+    background-color: var(--pastel-delete-bg);
+    color: var(--pastel-delete-text);
+    border-color: var(--pastel-delete-border);
+}
+
+.delete-btn:hover {
+    background-color: #FCE5E5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(139, 90, 90, 0.15);
+}
+
+/* ========== MODAL ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.modal-header h3 {
+    color: var(--primary-deep);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--neutral-gray);
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.close-btn:hover {
+    color: var(--primary-deep);
+}
+
+.pastel-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.pastel-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary-deep);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.pastel-form input,
+.pastel-form select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background-color: white;
+}
+
+.pastel-form input:focus,
+.pastel-form select:focus {
+    outline: none;
+    border-color: var(--primary-medium);
+    box-shadow: 0 0 0 3px rgba(19, 124, 139, 0.1);
+}
+
+.form-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
 }
 
 /* ========== RESPONSIVE ========== */

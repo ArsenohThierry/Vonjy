@@ -49,7 +49,7 @@
                         <tr>
                             <th>Ville</th>
                             <th>Type</th>
-                            <th>Produit</th>
+                            <th>Description</th>
                             <th>Prix unitaire (Ar)</th>
                             <th>Quantité</th>
                             <th>Valeur totale (Ar)</th>
@@ -58,33 +58,181 @@
                     </thead>
                     <tbody>
                         <!-- Besoin 1 : Riz - Nature -->
-                        <?php
-                        if (isset($besoins)) {
-                             foreach ($besoins as $besoin) { ?>
-                            <tr>
+                        <tr>
                             <td>
                                 <div class="ville-cell">
-                                    <span class="ville-nom"><?= $besoin['nom_ville'] ?></span>
-                                    <span class="ville-code">101</span>
+                                    <span class="ville-nom">Ambositra</span>
+                                    <span class="ville-code">AMB</span>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge badge-<?= $besoin['nom_categorie'] ?>"><?= $besoin['nom_categorie'] ?></span>
+                                <span class="badge badge-nature">Nature</span>
                             </td>
                             <td>
                                 <div class="description-cell">
-                                    <span class="description-titre"><?= $besoin['nom_produit'] ?></span>
-                                    <span class="description-detail">Bruh</span>
+                                    <span class="description-titre">Riz blanc</span>
+                                    <span class="description-detail">Sac de 50kg · Grade A</span>
                                 </div>
                             </td>
-                            <td class="prix-cell"><?= number_format($besoin['pu'], 0, ',', ' ') ?></td>
-                            <td class="quantite-cell"><?= $besoin['quantite_besoin'] ?></td>
-                            <td class="total-cell"><?= number_format($besoin['pu'] * $besoin['quantite_besoin'], 0, ',', ' ') ?></td>
-                            <td class="date-cell"><?= $besoin['date_besoin'] ?></td>
+                            <td class="prix-cell">45 000</td>
+                            <td class="quantite-cell">120</td>
+                            <td class="total-cell">5 400 000</td>
+                            <td class="date-cell">15/02/2026</td>
                         </tr>
-                       <?php }
-                        }
-                        ?>
+                        <!-- Besoin 2 : Huile - Nature -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Morondava</span>
+                                    <span class="ville-code">MDV</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-nature">Nature</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Huile végétale</span>
+                                    <span class="description-detail">Bidon de 5L · Premium</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">32 500</td>
+                            <td class="quantite-cell">85</td>
+                            <td class="total-cell">2 762 500</td>
+                            <td class="date-cell">14/02/2026</td>
+                        </tr>
+                        <!-- Besoin 3 : Tôles - Matériau -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Fort-Dauphin</span>
+                                    <span class="ville-code">FTD</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-materiau">Matériau</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Tôles ondulées</span>
+                                    <span class="description-detail">2m x 1m · Galvanisées</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">28 000</td>
+                            <td class="quantite-cell">200</td>
+                            <td class="total-cell">5 600 000</td>
+                            <td class="date-cell">12/02/2026</td>
+                        </tr>
+                        <!-- Besoin 4 : Clous - Matériau -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Nosy Be</span>
+                                    <span class="ville-code">NSB</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-materiau">Matériau</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Clous de charpente</span>
+                                    <span class="description-detail">Boîte de 1kg · 100mm</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">6 500</td>
+                            <td class="quantite-cell">150</td>
+                            <td class="total-cell">975 000</td>
+                            <td class="date-cell">10/02/2026</td>
+                        </tr>
+                        <!-- Besoin 5 : Argent - Argent -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Antananarivo</span>
+                                    <span class="ville-code">TNR</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-argent">Argent</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Fonds d'urgence</span>
+                                    <span class="description-detail">Aide directe aux sinistrés</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">-</td>
+                            <td class="quantite-cell">-</td>
+                            <td class="total-cell">15 000 000</td>
+                            <td class="date-cell">08/02/2026</td>
+                        </tr>
+                        <!-- Besoin 6 : Eau - Nature -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Toamasina</span>
+                                    <span class="ville-code">TMA</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-nature">Nature</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Eau potable</span>
+                                    <span class="description-detail">Bouteille 1.5L · Pack de 6</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">4 800</td>
+                            <td class="quantite-cell">500</td>
+                            <td class="total-cell">2 400 000</td>
+                            <td class="date-cell">05/02/2026</td>
+                        </tr>
+                        <!-- Besoin 7 : Ciment - Matériau -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Fianarantsoa</span>
+                                    <span class="ville-code">FIA</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-materiau">Matériau</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Ciment</span>
+                                    <span class="description-detail">Sac de 50kg · Portland</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">32 000</td>
+                            <td class="quantite-cell">80</td>
+                            <td class="total-cell">2 560 000</td>
+                            <td class="date-cell">03/02/2026</td>
+                        </tr>
+                        <!-- Besoin 8 : Médicaments - Nature -->
+                        <tr>
+                            <td>
+                                <div class="ville-cell">
+                                    <span class="ville-nom">Mahajanga</span>
+                                    <span class="ville-code">MJN</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-nature">Nature</span>
+                            </td>
+                            <td>
+                                <div class="description-cell">
+                                    <span class="description-titre">Kits médicaux</span>
+                                    <span class="description-detail">Antibiotiques + antipaludiques</span>
+                                </div>
+                            </td>
+                            <td class="prix-cell">125 000</td>
+                            <td class="quantite-cell">25</td>
+                            <td class="total-cell">3 125 000</td>
+                            <td class="date-cell">01/02/2026</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

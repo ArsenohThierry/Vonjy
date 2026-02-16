@@ -7,18 +7,16 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/add-don.css">
 </head>
 <body>
-    <!-- ========== LAYOUT PRINCIPAL AVEC MENU LATERAL ========== -->
     <?php $activePage = 'dons'; ?>
     <div class="app-container">
-        <!-- ========== MENU DE NAVIGATION GAUCHE ========== -->
+
         <?php include('partials/sidebar.php'); ?>
 
-        <!-- ========== CONTENU PRINCIPAL ========== -->
+
         <main class="main-content">
-            <!-- Header avec retour -->
             <header class="content-header">
                 <div class="title-with-back">
-                    <a href="dons" class="back-link">
+                    <a href="<?= BASE_URL ?>/dons" class="back-link">
                         <svg class="back-icon" viewBox="0 0 24 24" width="20" height="20">
                             <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                         </svg>
@@ -27,13 +25,20 @@
                     <h1 class="page-title">Ajouter un don</h1>
                 </div>
                 <div class="header-actions">
-                    <span class="date-indicator">Nouvelle contribution</span>
+                    <a href="<?= BASE_URL ?>/add-produit">
+                        <button class="btn btn-secondary">
+                            <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            Ajouter nouveau produit
+                        </button>
+                    </a>
                 </div>
             </header>
 
-            <!-- ========== CARD CENTRALE DU FORMULAIRE ========== -->
+            <div id="message-container" style="display: none;"></div>
+
             <div class="form-card">
-                <!-- En-tête décorative de la card -->
                 <div class="form-card-header">
                     <div class="form-card-icon">
                         <svg viewBox="0 0 24 24" width="28" height="28">
@@ -45,103 +50,77 @@
                 </div>
 
                 <!-- Formulaire -->
-                <form class="don-form">
-                    <!-- Type (Nature / Matériau / Argent) -->
+                <form id="don-form" class="don-form">
+                    <!-- Donateur / Organisation -->
                     <div class="form-group">
-                        <label class="form-label">
-                            Type de don <span class="required">*</span>
+                        <label for="nom_donneur" class="form-label">
+                            Donateur / Organisation <span class="required">*</span>
                         </label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="type" value="nature" checked>
-                                <span class="radio-label radio-nature">
-                                    <span class="radio-emoji">🌾</span> Nature
-                                </span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="type" value="materiau">
-                                <span class="radio-label radio-materiau">
-                                    <span class="radio-emoji">🔨</span> Matériau
-                                </span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="type" value="argent">
-                                <span class="radio-label radio-argent">
-                                    <span class="radio-emoji">💰</span> Argent
-                                </span>
-                            </label>
-                        </div>
+                        <input type="text" id="nom_donneur" name="nom_donneur" class="form-input" 
+                               placeholder="ex: UNICEF, Croix-Rouge, Banque Mondiale..." required>
+                        <span class="form-hint">Nom de l'organisation ou personne donatrice</span>
                     </div>
 
-                    <!-- Description -->
+                    <!-- Produit -->
                     <div class="form-group">
-                        <label for="description" class="form-label">
-                            Description détaillée <span class="required">*</span>
+                        <label for="id_produit" class="form-label">
+                            Produit <span class="required">*</span>
                         </label>
-                        <input type="text" id="description" name="description" class="form-input" 
-                               placeholder="ex: Riz blanc, sacs de 50kg - Donateur: UNICEF" required>
-                        <span class="form-hint">Indiquez le produit, les spécifications et le donateur</span>
+                        <select id="id_produit" name="id_produit" class="form-input" required>
+                            <option value="">-- Sélectionner un produit --</option>
+                            <?php foreach ($produits as $produit): ?>
+                                <option value="<?= $produit['id'] ?>" data-pu="<?= $produit['pu'] ?>" data-categorie="<?= htmlspecialchars($produit['nom_categorie']) ?>">
+                                    <?= htmlspecialchars($produit['nom_produit']) ?> (<?= htmlspecialchars($produit['nom_categorie']) ?>) - <?= number_format($produit['pu'], 0, ',', ' ') ?> Ar
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <span class="form-hint">Sélectionnez le produit donné</span>
                     </div>
 
-                    <!-- Type de quantité (adaptatif) -->
-                    <div class="form-group" id="quantite-group">
-                        <label for="quantite" class="form-label">
+                    <!-- Quantité -->
+                    <div class="form-group">
+                        <label for="quantite_don" class="form-label">
                             Quantité <span class="required">*</span>
                         </label>
                         <div class="input-with-unit">
-                            <input type="number" id="quantite" name="quantite" class="form-input" 
-                                   placeholder="500" min="0" step="1" required>
-                            <span class="input-unit" id="quantite-unit">sacs</span>
+                            <input type="number" id="quantite_don" name="quantite_don" class="form-input" 
+                                   placeholder="500" min="1" step="1" required>
+                            <span class="input-unit">unités</span>
                         </div>
-                        <span class="form-hint" id="quantite-hint">Nombre d'unités</span>
+                        <span class="form-hint">Nombre d'unités</span>
                     </div>
 
-                    <!-- Montant (caché par défaut, apparaît si type Argent) -->
-                    <div class="form-group" id="montant-group" style="display: none;">
-                        <label for="montant" class="form-label">
-                            Montant (Ariary) <span class="required">*</span>
+                    <!-- Montant estimé (calculé automatiquement) -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Montant estimé
                         </label>
                         <div class="input-with-unit">
-                            <input type="number" id="montant" name="montant" class="form-input" 
-                                   placeholder="15 000 000" min="0" step="1000">
+                            <input type="text" id="montant_estime" class="form-input" 
+                                   placeholder="0" readonly style="background-color: #f5f5f5;">
                             <span class="input-unit">Ar</span>
                         </div>
-                        <span class="form-hint">En Ariary malgache</span>
+                        <span class="form-hint">Calculé automatiquement : Quantité × Prix unitaire</span>
                     </div>
 
                     <!-- Date -->
                     <div class="form-group">
-                        <label for="date" class="form-label">
+                        <label for="date_don" class="form-label">
                             Date de réception <span class="required">*</span>
                         </label>
-                        <input type="date" id="date" name="date" class="form-input" 
-                               value="2026-02-16" required>
-                    </div>
-
-                    <!-- Donateur (optionnel) -->
-                    <div class="form-group">
-                        <label for="donateur" class="form-label">Donateur / Organisation</label>
-                        <input type="text" id="donateur" name="donateur" class="form-input" 
-                               placeholder="ex: UNICEF, Croix-Rouge, Banque Mondiale...">
-                        <span class="form-hint">Optionnel - Nom de l'organisation donatrice</span>
-                    </div>
-
-                    <!-- Notes (optionnel) -->
-                    <div class="form-group">
-                        <label for="notes" class="form-label">Notes additionnelles</label>
-                        <textarea id="notes" name="notes" class="form-textarea" 
-                                  rows="3" placeholder="Informations complémentaires, conditions particulières..."></textarea>
+                        <input type="date" id="date_don" name="date_don" class="form-input" 
+                               value="<?= date('Y-m-d') ?>" required>
                     </div>
 
                     <!-- Boutons d'action -->
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="window.location.href='dons.html'">Annuler</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='<?= BASE_URL ?>/dons'">Annuler</button>
                         <button type="submit" class="btn btn-primary">Ajouter ce don</button>
                     </div>
                 </form>
             </div>
 
-            <!-- ========== FOOTER ========== -->
+            <!-- footer-->
             <footer class="footer">
                 <p>© 2026 BNGRC - Système de gestion des dons</p>
                 <p>ETU004031 - ETU004183 - ETU004273</p>
@@ -149,50 +128,115 @@
         </main>
     </div>
 
-    <!-- Petit script pour l'interactivité des champs (optionnel, mais amélioration UX) -->
+    <!-- Script pour la gestion du formulaire -->
     <script>
         (function() {
-            // Gestion de l'affichage Quantité / Montant selon le type sélectionné
-            const radios = document.querySelectorAll('input[name="type"]');
-            const quantiteGroup = document.getElementById('quantite-group');
-            const montantGroup = document.getElementById('montant-group');
-            const quantiteUnit = document.getElementById('quantite-unit');
-            const quantiteHint = document.getElementById('quantite-hint');
-            const quantiteInput = document.getElementById('quantite');
-            const montantInput = document.getElementById('montant');
+            const form = document.getElementById('don-form');
+            const messageContainer = document.getElementById('message-container');
+            const produitSelect = document.getElementById('id_produit');
+            const quantiteInput = document.getElementById('quantite_don');
+            const montantEstime = document.getElementById('montant_estime');
 
-            function updateFields() {
-                const selectedType = document.querySelector('input[name="type"]:checked').value;
-                
-                if (selectedType === 'argent') {
-                    quantiteGroup.style.display = 'none';
-                    montantGroup.style.display = 'block';
-                    quantiteInput.removeAttribute('required');
-                    montantInput.setAttribute('required', 'required');
+            // Calculer le montant estimé quand le produit ou la quantité change
+            function calculateMontant() {
+                const selectedOption = produitSelect.options[produitSelect.selectedIndex];
+                if (selectedOption && selectedOption.value) {
+                    const pu = parseFloat(selectedOption.getAttribute('data-pu')) || 0;
+                    const quantite = parseInt(quantiteInput.value) || 0;
+                    const montant = pu * quantite;
+                    montantEstime.value = montant > 0 ? formatNumber(montant) : '0';
                 } else {
-                    quantiteGroup.style.display = 'block';
-                    montantGroup.style.display = 'none';
-                    montantInput.removeAttribute('required');
-                    quantiteInput.setAttribute('required', 'required');
-                    
-                    // Adapter le libellé selon le type
-                    if (selectedType === 'nature') {
-                        quantiteUnit.textContent = 'unités';
-                        quantiteHint.textContent = 'Nombre d\'unités (sacs, kits, bouteilles...)';
-                    } else if (selectedType === 'materiau') {
-                        quantiteUnit.textContent = 'unités';
-                        quantiteHint.textContent = 'Nombre d\'unités (tôles, sacs de ciment, boîtes...)';
-                    }
+                    montantEstime.value = '0';
                 }
             }
 
-            radios.forEach(radio => {
-                radio.addEventListener('change', updateFields);
+            produitSelect.addEventListener('change', calculateMontant);
+            quantiteInput.addEventListener('input', calculateMontant);
+
+            // Soumission du formulaire
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Récupérer les données du formulaire
+                const formData = new FormData(form);
+
+                // Désactiver le bouton de soumission
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Ajout en cours...';
+
+                // Envoyer la requête AJAX
+                fetch('<?= BASE_URL ?>/add-don', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Afficher message de succès
+                        showMessage('Don ajouté avec succès !', 'success');
+                        
+                        // Réinitialiser le formulaire
+                        form.reset();
+                        montantEstime.value = '0';
+                        
+                        // Rediriger vers la liste des dons après 1.5 secondes
+                        setTimeout(() => {
+                            window.location.href = '<?= BASE_URL ?>/dons';
+                        }, 1500);
+                    } else {
+                        showMessage(data.message || 'Erreur lors de l\'ajout du don', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    showMessage('Une erreur s\'est produite. Veuillez réessayer.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                });
             });
 
-            // Initialisation
-            updateFields();
+            function showMessage(message, type) {
+                messageContainer.innerHTML = `
+                    <div class="alert alert-${type}">
+                        ${message}
+                    </div>
+                `;
+                messageContainer.style.display = 'block';
+                window.scrollTo(0, 0);
+                
+                // Masquer le message après 5 secondes
+                setTimeout(() => {
+                    messageContainer.style.display = 'none';
+                }, 5000);
+            }
+
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            }
         })();
     </script>
+
+    <style>
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
 </body>
 </html>

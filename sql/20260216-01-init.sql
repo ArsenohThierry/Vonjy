@@ -1,3 +1,7 @@
+create database vonjy;
+use vonjy;
+
+
 create table region_vonjy(
     id INT PRIMARY KEY AUTO_INCREMENT,
     nom_region VARCHAR(50) NOT NULL

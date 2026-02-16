@@ -8,6 +8,8 @@
             <li <?= ($activePage ?? '') === 'villes' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/villes">Villes</a></li>
             <li <?= ($activePage ?? '') === 'besoins' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/besoins">Besoins</a></li>
             <li <?= ($activePage ?? '') === 'dons' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/dons">Dons</a></li>
+            <li <?= ($activePage ?? '') === 'produits' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/produits">Produits</a></li>
+            <li <?= ($activePage ?? '') === 'categories' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/categorie">Catégories</a></li>
         </ul>
     </nav>
     <div class="sidebar-footer">
