@@ -61,6 +61,9 @@ $router->group('', function (Router $router) use ($app) {
 
 	$router->get('/besoins/@id', [BesoinVilleController::class, 'getBesoinByIdVille']);
 
+	$router->get('/add-besoin', [BesoinVilleController::class, 'showAddBesoinForm']);
+	$router->post('/save-besoin', [BesoinVilleController::class, 'storeBesoin']);
+
 	$router->get('/hello-world/@name', function ($name) {
 		echo '<h1>Hello world! Oh hey ' . $name . '!</h1>';
 	});

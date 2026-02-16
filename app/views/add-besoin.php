@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
     <title>BNGRC · Ajouter un besoin</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/add-besoin.css">
+    <style>
+        .alert { padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
 </head>
 <body>
     <!-- ========== LAYOUT PRINCIPAL AVEC MENU LATERAL ========== -->
@@ -18,7 +23,7 @@
             <!-- Header avec retour -->
             <header class="content-header">
                 <div class="title-with-back">
-                    <a href="besoins.html" class="back-link">
+                    <a href="/besoins" class="back-link">
                         <svg class="back-icon" viewBox="0 0 24 24" width="20" height="20">
                             <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                         </svg>
@@ -30,6 +35,14 @@
                     <span class="date-indicator">Nouvelle requête</span>
                 </div>
             </header>
+
+            <?php if (!empty($message)): ?>
+                <div class="alert alert-success"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
+            
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-error"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
 
             <!-- ========== CARD CENTRALE DU FORMULAIRE ========== -->
             <div class="form-card">
@@ -43,98 +56,75 @@
                     <p class="form-card-subtitle">Remplissez les informations ci-dessous</p>
                 </div>
 
-                <form class="besoin-form">
+                <form class="besoin-form" method="POST" action="<?= BASE_URL ?>/save-besoin">
                     <!-- Ville (select) -->
                     <div class="form-group">
-                        <label for="ville" class="form-label">
+                        <label for="id_ville" class="form-label">
                             Ville <span class="required">*</span>
                         </label>
                         <div class="select-wrapper">
-                            <select id="ville" name="ville" class="form-select" required>
+                            <select id="id_ville" name="id_ville" class="form-select" required>
                                 <option value="" disabled selected>Choisir une ville</option>
-                                <option value="ambositra">Ambositra (AMB)</option>
-                                <option value="morondava">Morondava (MDV)</option>
-                                <option value="fort-dauphin">Fort-Dauphin (FTD)</option>
-                                <option value="nosy-be">Nosy Be (NSB)</option>
-                                <option value="antananarivo">Antananarivo (TNR)</option>
-                                <option value="toamasina">Toamasina (TMA)</option>
-                                <option value="fianarantsoa">Fianarantsoa (FIA)</option>
-                                <option value="mahajanga">Mahajanga (MJN)</option>
+                                <?php foreach ($villes as $ville): ?>
+                                    <option value="<?= $ville['id'] ?>">
+                                        <?= htmlspecialchars($ville['nom_ville'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Type (Nature / Matériau / Argent) -->
+                    <!-- Produit (select) -->
                     <div class="form-group">
-                        <label for="type" class="form-label">
-                            Type <span class="required">*</span>
+                        <label for="id_produit" class="form-label">
+                            Produit <span class="required">*</span>
                         </label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="type" value="nature" checked>
-                                <span class="radio-label radio-nature">Nature</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="type" value="materiau">
-                                <span class="radio-label radio-materiau">Matériau</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="type" value="argent">
-                                <span class="radio-label radio-argent">Argent</span>
-                            </label>
+                        <div class="select-wrapper">
+                            <select id="id_produit" name="id_produit" class="form-select" required>
+                                <option value="" disabled selected>Choisir un produit</option>
+                                <?php 
+                                $currentCategory = '';
+                                foreach ($produits as $produit): 
+                                    if ($currentCategory !== $produit['nom_categorie']):
+                                        if ($currentCategory !== '') echo '</optgroup>';
+                                        $currentCategory = $produit['nom_categorie'];
+                                        echo '<optgroup label="' . htmlspecialchars($currentCategory, ENT_QUOTES, 'UTF-8') . '">';
+                                    endif;
+                                ?>
+                                    <option value="<?= $produit['id'] ?>">
+                                        <?= htmlspecialchars($produit['nom_produit'], ENT_QUOTES, 'UTF-8') ?> 
+                                        (<?= number_format($produit['pu'], 0, ',', ' ') ?> Ar)
+                                    </option>
+                                <?php 
+                                endforeach; 
+                                if ($currentCategory !== '') echo '</optgroup>';
+                                ?>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Description -->
+                    <!-- Quantité -->
                     <div class="form-group">
-                        <label for="description" class="form-label">
-                            Description <span class="required">*</span>
+                        <label for="quantite_besoin" class="form-label">
+                            Quantité <span class="required">*</span>
                         </label>
-                        <input type="text" id="description" name="description" class="form-input" 
-                               placeholder="ex: Riz blanc, sac de 50kg" required>
-                        <span class="form-hint">Indiquez le produit et ses spécifications</span>
-                    </div>
-
-                    <!-- Prix unitaire et Quantité (côte à côte) -->
-                    <div class="form-row">
-                        <div class="form-group half">
-                            <label for="prix" class="form-label">
-                                Prix unitaire (Ar)
-                            </label>
-                            <input type="number" id="prix" name="prix" class="form-input" 
-                                   placeholder="45000" min="0" step="100">
-                            <span class="form-hint">En Ariary</span>
-                        </div>
-
-                        <div class="form-group half">
-                            <label for="quantite" class="form-label">
-                                Quantité
-                            </label>
-                            <input type="number" id="quantite" name="quantite" class="form-input" 
-                                   placeholder="120" min="0">
-                            <span class="form-hint">Nombre d'unités</span>
-                        </div>
+                        <input type="number" id="quantite_besoin" name="quantite_besoin" class="form-input" 
+                               placeholder="120" min="1" required>
+                        <span class="form-hint">Nombre d'unités nécessaires</span>
                     </div>
 
                     <!-- Date -->
                     <div class="form-group">
-                        <label for="date" class="form-label">
+                        <label for="date_besoin" class="form-label">
                             Date du besoin <span class="required">*</span>
                         </label>
-                        <input type="date" id="date" name="date" class="form-input" 
-                               value="2026-02-16" required>
-                    </div>
-
-                    <!-- Note optionnelle -->
-                    <div class="form-group">
-                        <label for="notes" class="form-label">Notes additionnelles</label>
-                        <textarea id="notes" name="notes" class="form-textarea" 
-                                  rows="3" placeholder="Informations complémentaires..."></textarea>
+                        <input type="datetime-local" id="date_besoin" name="date_besoin" class="form-input" 
+                               value="<?= date('Y-m-d\TH:i') ?>" required>
                     </div>
 
                     <!-- Boutons d'action -->
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="window.location.href='besoins.html'">Annuler</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='/besoins'">Annuler</button>
                         <button type="submit" class="btn btn-primary">Ajouter le besoin</button>
                     </div>
                 </form>

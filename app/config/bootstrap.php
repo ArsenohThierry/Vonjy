@@ -16,6 +16,11 @@ if(file_exists(__DIR__. $ds . 'config.php') === false) {
 // This is important as it connects any static calls to the same $app object
 $app = Flight::app();
 
+// Start session for flash messages
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 /*
  * Load the config file
  * P.S. When you require a php file and that file returns an array, the array

@@ -21,12 +21,14 @@
                     <h1 class="page-title">Liste des besoins</h1>
                     <p class="page-subtitle">Gestion des ressources nécessaires par ville</p>
                 </div>
-                <button class="btn btn-primary">
+                <a href="<?= BASE_URL ?>/add-besoin">
+                                    <button class="btn btn-primary">
                     <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18">
                         <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                     </svg>
                     Ajouter un besoin
                 </button>
+                </a>
             </header>
 
             <!-- ========== FILTRES RAPIDES (optionnels, pour l'ambiance) ========== -->
