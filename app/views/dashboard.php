@@ -41,17 +41,17 @@
                 <!-- Carte Total dons reçus -->
                 <div class="card card-dons">
                     <div class="card-title">Total des dons reçus</div>
-                    <div class="card-value">0 <small>Mrd Ar</small></div>
+                    <div class="card-value"><?= number_format($totalDons, 0, ',', ' ') ?> <small>Ar</small></div>
                 </div>
                 <!-- Carte Total attribué -->
                 <div class="card card-attribue">
                     <div class="card-title">Total attribué</div>
-                    <div class="card-value">0 <small>Mrd Ar</small></div>
+                    <div class="card-value"><?= number_format($simulation['totaux']['total_attribue'], 0, ',', ' ') ?> <small>Ar</small></div>
                 </div>
                 <!-- Carte Reste à couvrir -->
                 <div class="card card-reste">
                     <div class="card-title">Reste à couvrir</div>
-                    <div class="card-value"><?= number_format($totalBesoins['estimation_totale_besoins'], 0, ',', ' ') ?> <small>Ar</small></div>
+                    <div class="card-value"><?= number_format($simulation['totaux']['total_reste'], 0, ',', ' ') ?> <small>Ar</small></div>
                 </div>
             </div>
 
@@ -72,13 +72,19 @@
                     </thead>
                     <tbody>
                         <?php 
-                        foreach ($villes as $ville) { ?>
+                        foreach ($villes as $ville) { 
+                            $villeId = $ville['id'];
+                            $villeSimu = $simulation['par_ville'][$villeId] ?? null;
+                            $totalAttribue = $villeSimu ? $villeSimu['total_attribue'] : 0;
+                            $estimation = $estimations[$ville['nom_ville']][0]['estimation_totale'] ?? 0;
+                            $reste = $estimation - $totalAttribue;
+                        ?>
                          <tr>
-                            <td><a href="<?= BASE_URL ?>/besoins/<?= $ville['id'] ?>"><?= htmlspecialchars($ville['nom_ville']) ?></a></td>
+                            <td><a href="<?= BASE_URL ?>/besoins/<?= $villeId ?>"><?= htmlspecialchars($ville['nom_ville']) ?></a></td>
                             <td><?= number_format($ville['nombre_sinistre'], 0, ',', ' ') ?></td>
-                            <td><?= number_format($estimations[$ville['nom_ville']][0]['estimation_totale'] ?? 0, 0, ',', ' ') ?></td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td><?= number_format($estimation, 0, ',', ' ') ?></td>
+                            <td><?= number_format($totalAttribue, 0, ',', ' ') ?></td>
+                            <td><?= number_format($reste, 0, ',', ' ') ?></td>
                          </tr>   
                        <?php } 
                         ?>

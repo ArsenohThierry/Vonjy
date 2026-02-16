@@ -19,10 +19,14 @@
             <header class="content-header">
                 <div class="title-section">
                     <h1 class="page-title">Simulation de répartition des dons</h1>
-                    <p class="page-subtitle">Optimisation de l'allocation des ressources par ville</p>
+                    <p class="page-subtitle">Répartition des dons par ordre de date de besoin</p>
                 </div>
                 <div class="header-actions">
-                    <span class="simulation-badge">Simulation en cours</span>
+                    <?php if (!empty($simulated)): ?>
+                        <span class="simulation-badge">Simulation terminée</span>
+                    <?php else: ?>
+                        <span class="simulation-badge" style="background: #f0f0f0; color: #666;">En attente de simulation</span>
+                    <?php endif; ?>
                 </div>
             </header>
 
@@ -37,7 +41,7 @@
                     </div>
                     <div class="card-content">
                         <span class="card-label">Total dons disponibles</span>
-                        <span class="card-value">23 500 000 <small>Ar</small></span>
+                        <span class="card-value"><?= number_format($totalDons, 0, ',', ' ') ?> <small>Ar</small></span>
                     </div>
                 </div>
 
@@ -50,7 +54,7 @@
                     </div>
                     <div class="card-content">
                         <span class="card-label">Total besoins estimés</span>
-                        <span class="card-value">32 450 000 <small>Ar</small></span>
+                        <span class="card-value"><?= number_format($totalBesoins, 0, ',', ' ') ?> <small>Ar</small></span>
                     </div>
                 </div>
 
@@ -63,28 +67,35 @@
                     </div>
                     <div class="card-content">
                         <span class="card-label">Taux de couverture global</span>
-                        <span class="card-value">72,4 <small>%</small></span>
+                        <span class="card-value"><?= $tauxCouverture ?> <small>%</small></span>
                     </div>
                     <div class="card-progress">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 72.4%"></div>
+                            <div class="progress-fill" style="width: <?= min($tauxCouverture, 100) ?>%"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ========== BOUTON CENTRAL DE SIMULATION ========== -->
+            <!-- ========== BOUTONS DE SIMULATION ========== -->
             <div class="simulation-actions">
-                <button class="btn-simulation">
-                    <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
-                        <path fill="currentColor" d="M8 5v14l11-7z"/>
-                    </svg>
-                    Lancer la simulation
+                <form method="POST" action="<?= BASE_URL ?>/dispatch/simuler" style="display: inline;">
+                    <button type="submit" class="btn-simulation">
+                        <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M8 5v14l11-7z"/>
+                        </svg>
+                        Simuler le dispatch
+                    </button>
+                </form>
+                <button class="btn-simulation" style="background: #ccc; color: #666; cursor: not-allowed;" disabled title="Fonctionnalité à venir">
+                    Distribuer les dons
                 </button>
-                <span class="simulation-hint">Cliquez pour actualiser la répartition</span>
+                <br>
+                <span class="simulation-hint">La simulation affiche les résultats sans modifier la base de données</span>
             </div>
 
-            <!-- ========== TABLEAU RÉCAPITULATIF ========== -->
+            <?php if (!empty($simulated) && $simulation): ?>
+            <!-- ========== TABLEAU PAR VILLE ========== -->
             <div class="table-container">
                 <table class="simulation-table">
                     <thead>
@@ -93,136 +104,72 @@
                             <th>Besoin total (Ar)</th>
                             <th>Don attribué (Ar)</th>
                             <th>Reste à couvrir (Ar)</th>
+                            <th>Taux</th>
                             <th>Statut</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Ambositra - Couvert -->
+                        <?php foreach ($simulation['par_ville'] as $ville): ?>
                         <tr>
                             <td>
                                 <div class="ville-cell">
-                                    <span class="ville-nom">Ambositra</span>
-                                    <span class="ville-region">Amoron'i Mania</span>
+                                    <span class="ville-nom"><?= htmlspecialchars($ville['nom_ville']) ?></span>
+                                    <span class="ville-region"><?= htmlspecialchars($ville['nom_region']) ?></span>
                                 </div>
                             </td>
-                            <td class="montant">5 400 000</td>
-                            <td class="montant attribue">5 400 000</td>
-                            <td class="montant reste">0</td>
+                            <td class="montant"><?= number_format($ville['total_besoins'], 0, ',', ' ') ?></td>
+                            <td class="montant attribue"><?= number_format($ville['total_attribue'], 0, ',', ' ') ?></td>
+                            <td class="montant reste"><?= number_format($ville['reste'], 0, ',', ' ') ?></td>
+                            <td><?= $ville['taux_couverture'] ?>%</td>
                             <td>
-                                <span class="status-badge status-couvert">
+                                <span class="status-badge status-<?= $ville['statut'] ?>">
                                     <span class="status-dot"></span>
-                                    Couvert
+                                    <?php 
+                                    if ($ville['statut'] === 'couvert') echo 'Couvert';
+                                    elseif ($ville['statut'] === 'partiel') echo 'Partiel';
+                                    else echo 'Non couvert';
+                                    ?>
                                 </span>
                             </td>
                         </tr>
-                        <!-- Morondava - Partiel -->
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ========== DÉTAIL DES ALLOCATIONS ========== -->
+            <h2 style="margin: 30px 0 15px; color: #333; font-size: 1.1em;">Détail des allocations par ordre de priorité</h2>
+            <div class="table-container">
+                <table class="simulation-table">
+                    <thead>
                         <tr>
-                            <td>
-                                <div class="ville-cell">
-                                    <span class="ville-nom">Morondava</span>
-                                    <span class="ville-region">Menabe</span>
-                                </div>
-                            </td>
-                            <td class="montant">2 762 500</td>
-                            <td class="montant attribue">1 850 000</td>
-                            <td class="montant reste">912 500</td>
-                            <td>
-                                <span class="status-badge status-partiel">
-                                    <span class="status-dot"></span>
-                                    Partiel
-                                </span>
-                            </td>
+                            <th>#</th>
+                            <th>Date besoin</th>
+                            <th>Ville</th>
+                            <th>Produit</th>
+                            <th>Catégorie</th>
+                            <th>Demandé</th>
+                            <th>Attribué</th>
+                            <th>Manquant</th>
                         </tr>
-                        <!-- Fort-Dauphin - Partiel -->
+                    </thead>
+                    <tbody>
+                        <?php foreach ($simulation['allocations'] as $i => $alloc): ?>
                         <tr>
+                            <td><?= $i + 1 ?></td>
+                            <td class="date-cell"><?= date('d/m/Y H:i', strtotime($alloc['date_besoin'])) ?></td>
+                            <td><?= htmlspecialchars($alloc['nom_ville']) ?></td>
+                            <td><?= htmlspecialchars($alloc['nom_produit']) ?></td>
                             <td>
-                                <div class="ville-cell">
-                                    <span class="ville-nom">Fort-Dauphin</span>
-                                    <span class="ville-region">Anosy</span>
-                                </div>
+                                <span class="badge badge-<?= $alloc['nom_categorie'] ?>"><?= $alloc['nom_categorie'] ?></span>
                             </td>
-                            <td class="montant">5 600 000</td>
-                            <td class="montant attribue">3 200 000</td>
-                            <td class="montant reste">2 400 000</td>
-                            <td>
-                                <span class="status-badge status-partiel">
-                                    <span class="status-dot"></span>
-                                    Partiel
-                                </span>
+                            <td><?= number_format($alloc['quantite_demandee'], 0, ',', ' ') ?></td>
+                            <td style="color: #137C8B; font-weight: 600;"><?= number_format($alloc['quantite_attribuee'], 0, ',', ' ') ?></td>
+                            <td style="color: <?= $alloc['quantite_manquante'] > 0 ? '#e74c3c' : '#27ae60' ?>;">
+                                <?= number_format($alloc['quantite_manquante'], 0, ',', ' ') ?>
                             </td>
                         </tr>
-                        <!-- Nosy Be - Couvert -->
-                        <tr>
-                            <td>
-                                <div class="ville-cell">
-                                    <span class="ville-nom">Nosy Be</span>
-                                    <span class="ville-region">Diana</span>
-                                </div>
-                            </td>
-                            <td class="montant">975 000</td>
-                            <td class="montant attribue">975 000</td>
-                            <td class="montant reste">0</td>
-                            <td>
-                                <span class="status-badge status-couvert">
-                                    <span class="status-dot"></span>
-                                    Couvert
-                                </span>
-                            </td>
-                        </tr>
-                        <!-- Antananarivo - Non couvert -->
-                        <tr>
-                            <td>
-                                <div class="ville-cell">
-                                    <span class="ville-nom">Antananarivo</span>
-                                    <span class="ville-region">Analamanga</span>
-                                </div>
-                            </td>
-                            <td class="montant">15 000 000</td>
-                            <td class="montant attribue">6 500 000</td>
-                            <td class="montant reste">8 500 000</td>
-                            <td>
-                                <span class="status-badge status-non-couvert">
-                                    <span class="status-dot"></span>
-                                    Non couvert
-                                </span>
-                            </td>
-                        </tr>
-                        <!-- Toamasina - Partiel -->
-                        <tr>
-                            <td>
-                                <div class="ville-cell">
-                                    <span class="ville-nom">Toamasina</span>
-                                    <span class="ville-region">Atsinanana</span>
-                                </div>
-                            </td>
-                            <td class="montant">2 400 000</td>
-                            <td class="montant attribue">1 800 000</td>
-                            <td class="montant reste">600 000</td>
-                            <td>
-                                <span class="status-badge status-partiel">
-                                    <span class="status-dot"></span>
-                                    Partiel
-                                </span>
-                            </td>
-                        </tr>
-                        <!-- Fianarantsoa - Non couvert -->
-                        <tr>
-                            <td>
-                                <div class="ville-cell">
-                                    <span class="ville-nom">Fianarantsoa</span>
-                                    <span class="ville-region">Haute Matsiatra</span>
-                                </div>
-                            </td>
-                            <td class="montant">2 560 000</td>
-                            <td class="montant attribue">875 000</td>
-                            <td class="montant reste">1 685 000</td>
-                            <td>
-                                <span class="status-badge status-non-couvert">
-                                    <span class="status-dot"></span>
-                                    Non couvert
-                                </span>
-                            </td>
-                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -232,35 +179,50 @@
                 <div class="stats-legend">
                     <div class="legend-item">
                         <span class="legend-dot couvert"></span>
-                        <span>Couvert (2 villes)</span>
+                        <span>Couvert (<?= $simulation['totaux']['nb_couvert'] ?> villes)</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-dot partiel"></span>
-                        <span>Partiel (3 villes)</span>
+                        <span>Partiel (<?= $simulation['totaux']['nb_partiel'] ?> villes)</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-dot non-couvert"></span>
-                        <span>Non couvert (2 villes)</span>
+                        <span>Non couvert (<?= $simulation['totaux']['nb_non_couvert'] ?> villes)</span>
                     </div>
                 </div>
                 <div class="simulation-stats">
                     <div class="stat-block">
                         <span class="stat-label">Total attribué</span>
-                        <span class="stat-value">20 600 000 Ar</span>
+                        <span class="stat-value"><?= number_format($simulation['totaux']['total_attribue'], 0, ',', ' ') ?> Ar</span>
                     </div>
                     <div class="stat-block">
                         <span class="stat-label">Reste global</span>
-                        <span class="stat-value highlight">14 097 500 Ar</span>
+                        <span class="stat-value highlight"><?= number_format($simulation['totaux']['total_reste'], 0, ',', ' ') ?> Ar</span>
                     </div>
                 </div>
             </div>
+
+            <?php else: ?>
+            <!-- ========== MESSAGE QUAND PAS DE SIMULATION ========== -->
+            <div class="info-note" style="text-align: center; padding: 40px;">
+                <svg class="info-icon" viewBox="0 0 24 24" width="40" height="40">
+                    <path fill="#7A90A4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <p style="margin-top: 15px; color: #666; font-size: 1.1em;">
+                    Cliquez sur <strong>"Simuler le dispatch"</strong> pour voir la répartition des dons aux villes par ordre de date de besoin.
+                </p>
+                <p style="color: #999; font-size: 0.9em;">
+                    La simulation ne modifie pas la base de données.
+                </p>
+            </div>
+            <?php endif; ?>
 
             <!-- ========== NOTE D'INFORMATION ========== -->
             <div class="info-note">
                 <svg class="info-icon" viewBox="0 0 24 24" width="18" height="18">
                     <path fill="#7A90A4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                 </svg>
-                <span>Simulation basée sur les besoins prioritaires et la disponibilité des dons. Les montants sont indicatifs.</span>
+                <span>Les dons sont répartis par ordre chronologique des besoins. Les besoins les plus anciens sont servis en priorité.</span>
             </div>
 
             <!-- ========== FOOTER ========== -->

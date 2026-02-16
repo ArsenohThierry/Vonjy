@@ -4,6 +4,7 @@ use app\controllers\ApiExampleController;
 use app\controllers\VillesController;
 use app\controllers\BesoinVilleController;
 use app\controllers\DonController;
+use app\controllers\DispatchController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -63,6 +64,10 @@ $router->group('', function (Router $router) use ($app) {
 
 	$router->get('/add-besoin', [BesoinVilleController::class, 'showAddBesoinForm']);
 	$router->post('/save-besoin', [BesoinVilleController::class, 'storeBesoin']);
+
+	// Dispatch / Simulation
+	$router->get('/dispatch', [DispatchController::class, 'index']);
+	$router->post('/dispatch/simuler', [DispatchController::class, 'simuler']);
 
 	$router->get('/hello-world/@name', function ($name) {
 		echo '<h1>Hello world! Oh hey ' . $name . '!</h1>';

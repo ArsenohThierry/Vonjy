@@ -5,6 +5,7 @@ namespace app\controllers;
 use flight\Engine;
 use app\models\VilleModel;
 use app\models\BesoinVilleModel;
+use app\models\DispatchModel;
 use Flight;
 
 class VillesController {
@@ -30,9 +31,18 @@ class VillesController {
         //besoins total
         $totalBesoins = $besoinVilleModel->getTotalBesoins();
 
-        //
+        // Simulation pour obtenir les dons attribués par ville
+        $dispatchModel = new DispatchModel(Flight::db());
+        $simulation = $dispatchModel->simulerDispatch();
+        $totalDons = $dispatchModel->getTotalDons();
 
-        $this->app->render('dashboard', ['villes' => $villes, 'estimations' => $estimations, 'totalBesoins' => $totalBesoins]);
+        $this->app->render('dashboard', [
+            'villes' => $villes, 
+            'estimations' => $estimations, 
+            'totalBesoins' => $totalBesoins,
+            'simulation' => $simulation,
+            'totalDons' => $totalDons
+        ]);
     }
 
     public function getVilleById($id) {
