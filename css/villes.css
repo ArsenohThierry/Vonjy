@@ -1,0 +1,492 @@
+/* ========== RESET & VARIABLES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+}
+
+:root {
+    /* Palette institutionnelle - tons doux et féminins */
+    --primary-deep: #344D59;      /* bleu profond - élégant */
+    --primary-medium: #137C8B;     /* teal vintage */
+    --primary-soft: #709CA7;        /* gris-bleu apaisant */
+    --accent-light: #B8CBD0;        /* gris très doux, comme un voile */
+    --neutral-panel: #F8FAFC;       /* fond presque blanc, légèrement bleuté */
+    --neutral-white: #FFFFFF;
+    --neutral-gray: #7A90A4;         /* texte secondaire */
+    --border-light: #E6EDF2;         /* bordures délicates */
+    
+    /* Tons pastel pour actions */
+    --pastel-edit-bg: #F0F5FA;
+    --pastel-edit-text: #4A6F8C;
+    --pastel-delete-bg: #FDF0F0;
+    --pastel-delete-text: #B15A5A;
+    --pastel-hover: #E9F0F5;
+    
+    /* Badge besoins */
+    --badge-bg: #E7F0F4;
+    --badge-text: #2C5F6E;
+
+    --shadow-card: 0 10px 25px -8px rgba(52, 77, 89, 0.08), 0 2px 6px rgba(0,0,0,0.02);
+    --shadow-hover: 0 15px 30px -10px rgba(19,124,139,0.12);
+    --radius: 20px;
+    --radius-sm: 14px;
+}
+
+body {
+    background-color: var(--neutral-panel);
+    color: #1F2E36;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ========== LAYOUT AVEC MENU LATERAL ========== */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ========== SIDEBAR (MENU GAUCHE) ========== */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(165deg, #2A404D 0%, #1f3f4a 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 20px rgba(44, 62, 80, 0.1);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sidebar-header {
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-header .logo-text {
+    font-size: 1.8rem;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    color: white;
+    background: none;
+    -webkit-text-fill-color: white;
+    border-right: none;
+    padding-right: 0;
+    font-family: 'Segoe UI', serif;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.sidebar-nav li {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-nav a {
+    display: block;
+    padding: 0.85rem 1.5rem;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-weight: 450;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-nav a:hover {
+    background-color: rgba(255,255,255,0.06);
+    color: white;
+    border-left-color: var(--primary-soft);
+}
+
+.sidebar-nav li.active a {
+    background-color: rgba(19,124,139,0.3);
+    color: white;
+    border-left-color: #B8CBD0;
+    font-weight: 500;
+}
+
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+}
+
+/* ========== CONTENU PRINCIPAL ========== */
+.main-content {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    max-width: calc(100% - 260px);
+}
+
+/* ========== HEADER AVEC BOUTON PASTEL ========== */
+.content-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 450;
+    color: var(--primary-deep);
+    margin: 0;
+    letter-spacing: -0.02em;
+    position: relative;
+}
+
+.page-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-soft);
+    margin-top: 8px;
+    border-radius: 4px;
+    opacity: 0.5;
+}
+
+/* ========== BOUTON PRINCIPAL (AJOUTER) ========== */
+.btn-primary {
+    border: none;
+    background: linear-gradient(135deg, #FFFFFF, #F9FDFF);
+    padding: 0.7rem 2rem;
+    border-radius: 40px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--primary-deep);
+    box-shadow: 0 4px 12px rgba(19,124,139,0.08), 0 1px 3px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(112, 156, 167, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    letter-spacing: 0.3px;
+}
+
+.btn-primary:hover {
+    background: white;
+    border-color: var(--primary-medium);
+    box-shadow: 0 8px 18px rgba(19,124,139,0.12);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+/* ========== CONTENEUR TABLEAU ========== */
+.table-container {
+    background: var(--neutral-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    border: 1px solid rgba(184, 203, 208, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+/* ========== TABLEAU ÉLÉGANT ========== */
+.villes-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.villes-table thead {
+    background: linear-gradient(175deg, #F0F6FA, #F9FCFE);
+    border-bottom: 2px solid var(--accent-light);
+}
+
+.villes-table th {
+    font-weight: 550;
+    padding: 1.2rem 1.5rem;
+    text-align: left;
+    color: var(--primary-deep);
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.villes-table td {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+    color: #2A404D;
+    vertical-align: middle;
+}
+
+.villes-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.villes-table tbody tr:hover {
+    background-color: #F6FBFF;
+    cursor: default;
+}
+
+/* Style pour le nom de ville avec code */
+.ville-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.ville-nom {
+    font-weight: 600;
+    color: var(--primary-deep);
+    font-size: 1.05rem;
+}
+
+.ville-code {
+    font-size: 0.75rem;
+    color: var(--neutral-gray);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Badge besoins */
+.badge {
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    padding: 0.3rem 1rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    border: 1px solid rgba(19,124,139,0.1);
+}
+
+/* Montant */
+.montant {
+    font-weight: 600;
+    color: var(--primary-deep);
+    font-size: 1rem;
+}
+
+.devise {
+    font-size: 0.8rem;
+    color: var(--neutral-gray);
+    margin-left: 0.2rem;
+}
+
+/* ========== BOUTONS D'ACTION PASTEL ========== */
+.action-buttons {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    border: none;
+    padding: 0.4rem 0.9rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+}
+
+.action-btn .icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+}
+
+/* Bouton Modifier (pastel bleuté) */
+.edit-btn {
+    background-color: var(--pastel-edit-bg);
+    color: var(--pastel-edit-text);
+    border-color: rgba(74, 111, 140, 0.15);
+}
+
+.edit-btn:hover {
+    background-color: #E3ECF5;
+    border-color: var(--primary-soft);
+    transform: translateY(-1px);
+}
+
+/* Bouton Supprimer (pastel rose) */
+.delete-btn {
+    background-color: var(--pastel-delete-bg);
+    color: var(--pastel-delete-text);
+    border-color: rgba(177, 90, 90, 0.15);
+}
+
+.delete-btn:hover {
+    background-color: #FCE4E4;
+    border-color: #C48383;
+    transform: translateY(-1px);
+}
+
+/* ========== FOOTER DU TABLEAU (LÉGENDE) ========== */
+.table-footer {
+    text-align: right;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.8rem;
+    color: var(--neutral-gray);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-soft);
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+/* ========== FOOTER GLOBAL ========== */
+.footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-light);
+    text-align: center;
+    color: var(--neutral-gray);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* ========== RESPONSIVE ========== */
+
+/* Tablette */
+@media screen and (max-width: 1024px) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .main-content {
+        padding: 1.5rem;
+        max-width: calc(100% - 220px);
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 0.5rem 1rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .sidebar-header {
+        padding: 0.5rem 0;
+        border-bottom: none;
+    }
+    
+    .sidebar-nav {
+        padding: 0;
+    }
+    
+    .sidebar-nav ul {
+        display: flex;
+        gap: 0.3rem;
+    }
+    
+    .sidebar-nav a {
+        padding: 0.5rem 0.8rem;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        font-size: 0.85rem;
+    }
+    
+    .sidebar-nav a:hover {
+        border-left-color: transparent;
+        border-bottom-color: var(--primary-soft);
+    }
+    
+    .sidebar-nav li.active a {
+        border-left-color: transparent;
+        border-bottom-color: #B8CBD0;
+    }
+    
+    .sidebar-footer {
+        display: none;
+    }
+    
+    .main-content {
+        max-width: 100%;
+        padding: 1.5rem 1rem;
+    }
+    
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.6rem;
+    }
+    
+    .page-title::after {
+        width: 40px;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Tableau responsive avec scroll */
+    .table-container {
+        overflow-x: auto;
+        border-radius: var(--radius-sm);
+    }
+    
+    .villes-table {
+        min-width: 700px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .action-btn {
+        justify-content: center;
+    }
+}
+
+/* Petit mobile */
+@media screen and (max-width: 480px) {
+    .sidebar-nav a {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .table-footer {
+        text-align: center;
+        justify-content: center;
+    }
+}
