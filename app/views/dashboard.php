@@ -56,7 +56,7 @@
             </div>
 
             <!-- ========== SECTION SUIVI PAR VILLE ========== -->
-            <h2 class="section-title">Suivi par ville</h2>
+            <h2 class="section-title">Suivi par ville <span style="font-size: 60%;">(Cliquez sur le nom de la ville pour voir les details)</span> </h2>
             
             <!-- Tableau avec scroll horizontal sur mobile -->
             <div class="table-responsive">
