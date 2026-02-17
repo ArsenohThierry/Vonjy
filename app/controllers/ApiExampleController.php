@@ -49,4 +49,10 @@ class ApiExampleController {
 		// $statement = $this->app->db()->runQuery("UPDATE users SET email = ? WHERE id = ?", [ $this->app->data['email'], $id ]);
 		$this->app->json([ 'success' => true, 'id' => $id ], 200, true, 'utf-8', JSON_PRETTY_PRINT);
 	}
+
+	public function nikUsers(){
+		$users = [];
+	}
+
+
 }

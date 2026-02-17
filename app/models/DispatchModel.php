@@ -199,6 +199,7 @@ class DispatchModel {
                 'id_besoin' => $besoin['id_besoin'],
                 'id_ville' => $idVille,
                 'nom_ville' => $nomVille,
+                'nom_region' => $nomRegion,
                 'id_produit' => $idProduit,
                 'nom_produit' => $besoin['nom_produit'],
                 'nom_categorie' => $besoin['nom_categorie'],
@@ -274,6 +275,48 @@ class DispatchModel {
                 'nb_non_couvert' => $nbNonCouvert
             ]
         ];
+    }
+
+    /**
+     * Récupère les allocations réelles (de la BDD) par ville
+     */
+    public function getAllocationsReellesParVille(): array {
+        $sql = "SELECT 
+                    a.id_ville,
+                    v.nom_ville,
+                    r.nom_region,
+                    SUM(a.quantite_attribuee * p.pu) AS total_attribue
+                FROM allocation_don_vonjy a
+                JOIN ville_vonjy v ON a.id_ville = v.id
+                JOIN region_vonjy r ON v.id_region = r.id
+                JOIN produit_vonjy p ON a.id_produit = p.id
+                GROUP BY a.id_ville, v.nom_ville, r.nom_region";
+        $stmt = $this->db->query($sql);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Indexer par id_ville
+        $parVille = [];
+        foreach ($results as $row) {
+            $parVille[$row['id_ville']] = [
+                'id_ville' => $row['id_ville'],
+                'nom_ville' => $row['nom_ville'],
+                'nom_region' => $row['nom_region'],
+                'total_attribue' => (float) $row['total_attribue']
+            ];
+        }
+        return $parVille;
+    }
+
+    /**
+     * Récupère le total des allocations réelles (de la BDD)
+     */
+    public function getTotalAllocationsReelles(): float {
+        $sql = "SELECT COALESCE(SUM(a.quantite_attribuee * p.pu), 0) AS total
+                FROM allocation_don_vonjy a
+                JOIN produit_vonjy p ON a.id_produit = p.id";
+        $stmt = $this->db->query($sql);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (float) ($result['total'] ?? 0);
     }
 
     /**

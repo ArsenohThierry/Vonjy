@@ -21,20 +21,30 @@ class VillesController {
         $villeModel = new VilleModel(Flight::db());
         $villes = $villeModel->getAll();
 
-        //estimation des besoins
+        //estimation des besoins RESTANTS (après allocations/achats)
         $besoinVilleModel = new BesoinVilleModel(Flight::db());
         $estimations = [];
         foreach ($villes as $ville) {
             $estimations[$ville['nom_ville']] = $besoinVilleModel->getEstimationBesoinForVille($ville['id']);
         }
 
-        //besoins total
+        //besoins total RESTANTS
         $totalBesoins = $besoinVilleModel->getTotalBesoins();
 
-        // Simulation pour obtenir les dons attribués par ville
+        // Récupérer les allocations RÉELLES (de la BDD, pas simulation)
         $dispatchModel = new DispatchModel(Flight::db());
-        $simulation = $dispatchModel->simulerDispatch();
+        $allocationsParVille = $dispatchModel->getAllocationsReellesParVille();
+        $totalAllocations = $dispatchModel->getTotalAllocationsReelles();
         $totalDons = $dispatchModel->getTotalDons();
+
+        // Construire une structure compatible avec l'affichage
+        $simulation = [
+            'par_ville' => $allocationsParVille,
+            'totaux' => [
+                'total_attribue' => $totalAllocations,
+                'total_reste' => $totalBesoins['estimation_totale_besoins'] ?? 0
+            ]
+        ];
 
         $this->app->render('dashboard', [
             'villes' => $villes, 
