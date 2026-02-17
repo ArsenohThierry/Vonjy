@@ -87,11 +87,31 @@
                         Simuler le dispatch
                     </button>
                 </form>
-                <button class="btn-simulation" style="background: #ccc; color: #666; cursor: not-allowed;" disabled title="Fonctionnalité à venir">
-                    Distribuer les dons
-                </button>
+                <?php if (!empty($canDistribute)): ?>
+                    <form method="POST" action="<?= BASE_URL ?>/dispatch/distribuer" style="display: inline;">
+                        <button type="submit" class="btn-simulation" style="background: #27ae60;" onclick="return confirm('Confirmer la distribution ? Les dons disponibles seront attribués aux besoins restants.')">
+                            <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                            Distribuer les dons
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <button class="btn-simulation" style="background: #ccc; color: #666; cursor: not-allowed;" disabled title="Aucun don disponible ou tous les besoins sont couverts">
+                        Distribuer les dons
+                    </button>
+                <?php endif; ?>
+                <?php if (!empty($hasDistribution)): ?>
+                    <span class="simulation-badge" style="background: #d4edda; color: #155724; margin-left: 10px;">Distributions effectuées</span>
+                <?php endif; ?>
                 <br>
-                <span class="simulation-hint">La simulation affiche les résultats sans modifier la base de données</span>
+                <?php if (!empty($message)): ?>
+                    <div style="margin-top: 10px; padding: 10px 15px; background: #d4edda; color: #155724; border-radius: 6px; font-size: 0.9em;"><?= htmlspecialchars($message) ?></div>
+                <?php endif; ?>
+                <?php if (!empty($error)): ?>
+                    <div style="margin-top: 10px; padding: 10px 15px; background: #f8d7da; color: #721c24; border-radius: 6px; font-size: 0.9em;"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+                <span class="simulation-hint">La simulation affiche les résultats sans modifier la base de données. La distribution enregistre les allocations.</span>
             </div>
 
             <?php if (!empty($simulated) && $simulation): ?>
@@ -214,6 +234,39 @@
                 <p style="color: #999; font-size: 0.9em;">
                     La simulation ne modifie pas la base de données.
                 </p>
+            </div>
+            <?php endif; ?>
+
+            <!-- ========== HISTORIQUE DES DISTRIBUTIONS ========== -->
+            <?php if (!empty($historique)): ?>
+            <h2 style="margin: 30px 0 15px; color: #333; font-size: 1.1em;">Historique des distributions</h2>
+            <div class="table-container">
+                <table class="simulation-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Dons disponibles</th>
+                            <th>Total attribué</th>
+                            <th>Nb allocations</th>
+                            <th>Besoins couverts</th>
+                            <th>Besoins partiels</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($historique as $i => $h): ?>
+                        <tr>
+                            <td><?= $h['id'] ?></td>
+                            <td><?= date('d/m/Y H:i', strtotime($h['date_distribution'])) ?></td>
+                            <td class="montant"><?= number_format($h['total_dons_disponibles'], 0, ',', ' ') ?> Ar</td>
+                            <td class="montant attribue"><?= number_format($h['total_attribue'], 0, ',', ' ') ?> Ar</td>
+                            <td><?= $h['nb_allocations'] ?></td>
+                            <td style="color: #27ae60;"><?= $h['nb_besoins_couverts'] ?></td>
+                            <td style="color: #e67e22;"><?= $h['nb_besoins_partiels'] ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
             <?php endif; ?>
 

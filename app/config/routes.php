@@ -5,6 +5,7 @@ use app\controllers\VillesController;
 use app\controllers\BesoinVilleController;
 use app\controllers\DonController;
 use app\controllers\DispatchController;
+use app\controllers\AchatController;
 use app\middlewares\SecurityHeadersMiddleware;
 use flight\Engine;
 use flight\net\Router;
@@ -65,9 +66,17 @@ $router->group('', function (Router $router) use ($app) {
 	$router->get('/add-besoin', [BesoinVilleController::class, 'showAddBesoinForm']);
 	$router->post('/save-besoin', [BesoinVilleController::class, 'storeBesoin']);
 
-	// Dispatch / Simulation
+	// Dispatch / Simulation / Distribution
 	$router->get('/dispatch', [DispatchController::class, 'index']);
 	$router->post('/dispatch/simuler', [DispatchController::class, 'simuler']);
+	$router->post('/dispatch/distribuer', [DispatchController::class, 'distribuer']);
+
+	// Achats (achat de besoins via dons argent)
+	$router->get('/achats', [AchatController::class, 'listeAchats']);
+	$router->get('/api/achat/besoin/@id:[0-9]+', [AchatController::class, 'getBesoinInfo']);
+	$router->get('/api/achat/calculer', [AchatController::class, 'calculerCout']);
+	$router->post('/api/achat', [AchatController::class, 'effectuerAchat']);
+	$router->get('/api/achat/argent', [AchatController::class, 'getArgentDispo']);
 
 	$router->get('/hello-world/@name', function ($name) {
 		echo '<h1>Hello world! Oh hey ' . $name . '!</h1>';
