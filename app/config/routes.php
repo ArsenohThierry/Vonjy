@@ -78,6 +78,8 @@ $router->group('', function (Router $router) use ($app) {
 	$router->post('/api/achat', [AchatController::class, 'effectuerAchat']);
 	$router->get('/api/achat/argent', [AchatController::class, 'getArgentDispo']);
 
+	//prochain routage
+
 
 	// $router->get('/recapitulation', );
 
