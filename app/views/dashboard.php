@@ -76,8 +76,10 @@
                             $villeId = $ville['id'];
                             $villeSimu = $simulation['par_ville'][$villeId] ?? null;
                             $totalAttribue = $villeSimu ? $villeSimu['total_attribue'] : 0;
+                            // L'estimation est maintenant les besoins RESTANTS (après allocations/achats)
                             $estimation = $estimations[$ville['nom_ville']][0]['estimation_totale'] ?? 0;
-                            $reste = $estimation - $totalAttribue;
+                            // Le reste à couvrir EST l'estimation (car l'estimation = besoins restants)
+                            $reste = $estimation;
                         ?>
                          <tr>
                             <td><a href="<?= BASE_URL ?>/besoins/<?= $villeId ?>"><?= htmlspecialchars($ville['nom_ville']) ?></a></td>

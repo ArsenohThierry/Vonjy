@@ -53,4 +53,6 @@ class ApiExampleController {
 	public function nikUsers(){
 		$users = [];
 	}
+
+
 }

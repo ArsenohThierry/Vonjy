@@ -21,53 +21,68 @@
                     <h1 class="page-title">Simulation de répartition des dons</h1>
                     <p class="page-subtitle">Répartition des dons par ordre de date de besoin</p>
                 </div>
-                <div class="header-actions">
+                <div class="header-actions" style="display: flex; align-items: center; gap: 10px;">
                     <?php if (!empty($simulated)): ?>
                         <span class="simulation-badge">Simulation terminée</span>
                     <?php else: ?>
                         <span class="simulation-badge" style="background: #f0f0f0; color: #666;">En attente de simulation</span>
                     <?php endif; ?>
+                    <a href="<?= BASE_URL ?>/add-don" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #27ae60; color: white; text-decoration: none; border-radius: 6px; font-size: 0.9em;">
+                        <svg viewBox="0 0 24 24" width="16" height="16">
+                            <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Ajouter un don
+                    </a>
                 </div>
             </header>
 
             <!-- ========== RÉSUMÉ EN 3 CARDS ========== -->
             <div class="summary-cards">
                 <!-- Card Total dons -->
-                <div class="summary-card card-dons">
+                <div class="summary-card card-dons" <?php if (!empty($simulated)): ?>style="border: 2px solid #137C8B;"<?php endif; ?>>
                     <div class="card-icon">
                         <svg viewBox="0 0 24 24" width="24" height="24">
                             <path fill="#137C8B" d="M20 6h-2v2h-2V6h-2V4h2V2h2v2h2v2zm-10 2H8V6h2v2zm0 8H6v-4h4v4zm2 0v-4h4v4h-4zm-6 4v-2h2v2H6zm8 0v-2h2v2h-2zm-6-8H4V8h4v4zM2 20V4h12v2h-2v2h2v2h-2v2h2v2h-2v2h2v2H2z"/>
                         </svg>
                     </div>
                     <div class="card-content">
-                        <span class="card-label">Total dons disponibles</span>
+                        <span class="card-label">Total dons disponibles <?php if (!empty($simulated)): ?><em style="color: #137C8B; font-size: 0.75em;">(après simulation)</em><?php endif; ?></span>
                         <span class="card-value"><?= number_format($totalDons, 0, ',', ' ') ?> <small>Ar</small></span>
+                        <?php if (!empty($simulated) && isset($totalDonsInitial)): ?>
+                            <span style="font-size: 0.75em; color: #666;">Initial : <?= number_format($totalDonsInitial, 0, ',', ' ') ?> Ar</span>
+                        <?php endif; ?>
                     </div>
                 </div>
 
                 <!-- Card Total besoins -->
-                <div class="summary-card card-besoins">
+                <div class="summary-card card-besoins" <?php if (!empty($simulated)): ?>style="border: 2px solid #E68A2E;"<?php endif; ?>>
                     <div class="card-icon">
                         <svg viewBox="0 0 24 24" width="24" height="24">
                             <path fill="#E68A2E" d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5s-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8z"/>
                         </svg>
                     </div>
                     <div class="card-content">
-                        <span class="card-label">Total besoins estimés</span>
+                        <span class="card-label">Total besoins estimés <?php if (!empty($simulated)): ?><em style="color: #E68A2E; font-size: 0.75em;">(après simulation)</em><?php endif; ?></span>
                         <span class="card-value"><?= number_format($totalBesoins, 0, ',', ' ') ?> <small>Ar</small></span>
+                        <?php if (!empty($simulated) && isset($totalBesoinsInitial)): ?>
+                            <span style="font-size: 0.75em; color: #666;">Initial : <?= number_format($totalBesoinsInitial, 0, ',', ' ') ?> Ar</span>
+                        <?php endif; ?>
                     </div>
                 </div>
 
                 <!-- Card Taux de couverture -->
-                <div class="summary-card card-couverture">
+                <div class="summary-card card-couverture" <?php if (!empty($simulated)): ?>style="border: 2px solid #709CA7;"<?php endif; ?>>
                     <div class="card-icon">
                         <svg viewBox="0 0 24 24" width="24" height="24">
                             <path fill="#709CA7" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                         </svg>
                     </div>
                     <div class="card-content">
-                        <span class="card-label">Taux de couverture global</span>
+                        <span class="card-label">Taux de couverture global <?php if (!empty($simulated)): ?><em style="color: #709CA7; font-size: 0.75em;">(après simulation)</em><?php endif; ?></span>
                         <span class="card-value"><?= $tauxCouverture ?> <small>%</small></span>
+                        <?php if (!empty($simulated) && isset($tauxCouvertureInitial)): ?>
+                            <span style="font-size: 0.75em; color: #666;">Initial : <?= $tauxCouvertureInitial ?> %</span>
+                        <?php endif; ?>
                     </div>
                     <div class="card-progress">
                         <div class="progress-bar">
@@ -87,6 +102,14 @@
                         Simuler le dispatch
                     </button>
                 </form>
+                <?php if (!empty($simulated)): ?>
+                    <a href="<?= BASE_URL ?>/dispatch" class="btn-simulation" style="background: #6c757d; text-decoration: none; display: inline-flex;">
+                        <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>
+                        </svg>
+                        Retour état initial
+                    </a>
+                <?php endif; ?>
                 <?php if (!empty($canDistribute)): ?>
                     <form method="POST" action="<?= BASE_URL ?>/dispatch/distribuer" style="display: inline;">
                         <button type="submit" class="btn-simulation" style="background: #27ae60;" onclick="return confirm('Confirmer la distribution ? Les dons disponibles seront attribués aux besoins restants.')">
@@ -113,6 +136,96 @@
                 <?php endif; ?>
                 <span class="simulation-hint">La simulation affiche les résultats sans modifier la base de données. La distribution enregistre les allocations.</span>
             </div>
+
+            <!-- ========== TABLEAU DES BESOINS EN COURS ========== -->
+            <?php 
+            // En mode simulation, utiliser les allocations avec quantités restantes
+            if (!empty($simulated) && !empty($simulation['allocations'])) {
+                $besoinsAffiches = array_filter($simulation['allocations'], fn($a) => $a['quantite_manquante'] > 0);
+                $isSimulationMode = true;
+            } else {
+                $besoinsAffiches = $besoins ?? [];
+                $isSimulationMode = false;
+            }
+            ?>
+            <?php if (!empty($besoinsAffiches)): ?>
+            <div style="margin: 25px 0;">
+                <h2 style="margin: 0 0 15px; color: #333; font-size: 1.1em; display: flex; align-items: center; gap: 10px;">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#E68A2E" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Besoins des villes à couvrir
+                    <?php if ($isSimulationMode): ?>
+                        <em style="color: #137C8B; font-size: 0.75em;">(après simulation)</em>
+                    <?php endif; ?>
+                    <span style="background: <?= $isSimulationMode ? '#e3f2fd' : '#fef3e6' ?>; color: <?= $isSimulationMode ? '#137C8B' : '#E68A2E' ?>; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 500;"><?= count($besoinsAffiches) ?> besoins restants</span>
+                </h2>
+                <div class="table-container" style="max-height: 350px; overflow-y: auto;">
+                    <table class="simulation-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date besoin</th>
+                                <th>Ville</th>
+                                <th>Produit</th>
+                                <th>Catégorie</th>
+                                <?php if ($isSimulationMode): ?>
+                                    <th>Qté initiale</th>
+                                    <th>Attribué</th>
+                                    <th>Qté restante</th>
+                                <?php else: ?>
+                                    <th>Quantité</th>
+                                <?php endif; ?>
+                                <th>P.U.</th>
+                                <th>Montant restant (Ar)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $index = 0; foreach ($besoinsAffiches as $besoin): $index++; ?>
+                            <tr>
+                                <td><?= $index ?></td>
+                                <td class="date-cell"><?= date('d/m/Y H:i', strtotime($besoin['date_besoin'])) ?></td>
+                                <td>
+                                    <div class="ville-cell">
+                                        <span class="ville-nom"><?= htmlspecialchars($besoin['nom_ville']) ?></span>
+                                        <?php if (isset($besoin['nom_region'])): ?>
+                                            <span class="ville-region"><?= htmlspecialchars($besoin['nom_region']) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                                <td><?= htmlspecialchars($besoin['nom_produit']) ?></td>
+                                <td>
+                                    <span class="badge badge-<?= $besoin['nom_categorie'] ?>"><?= $besoin['nom_categorie'] ?></span>
+                                </td>
+                                <?php if ($isSimulationMode): ?>
+                                    <td style="text-align: center; color: #999;"><?= number_format($besoin['quantite_demandee'], 0, ',', ' ') ?></td>
+                                    <td style="text-align: center; color: #27ae60; font-weight: 600;">-<?= number_format($besoin['quantite_attribuee'], 0, ',', ' ') ?></td>
+                                    <td style="text-align: center; font-weight: 700; color: #e74c3c;"><?= number_format($besoin['quantite_manquante'], 0, ',', ' ') ?></td>
+                                <?php else: ?>
+                                    <td style="text-align: center;"><?= number_format($besoin['quantite_besoin'], 0, ',', ' ') ?></td>
+                                <?php endif; ?>
+                                <td style="text-align: right;"><?= number_format($besoin['pu'], 0, ',', ' ') ?></td>
+                                <?php 
+                                $montant = $isSimulationMode 
+                                    ? ($besoin['quantite_manquante'] * $besoin['pu']) 
+                                    : $besoin['montant_estime'];
+                                ?>
+                                <td style="text-align: right; font-weight: 600; color: #E68A2E;"><?= number_format($montant, 0, ',', ' ') ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <?php elseif (!empty($simulated)): ?>
+            <div style="margin: 25px 0; padding: 20px; background: #d4edda; border-radius: 8px; text-align: center; color: #155724;">
+                <strong>Simulation : Tous les besoins seraient couverts !</strong> Tous les besoins peuvent être satisfaits avec les dons disponibles.
+            </div>
+            <?php else: ?>
+            <div style="margin: 25px 0; padding: 20px; background: #d4edda; border-radius: 8px; text-align: center; color: #155724;">
+                <strong>Tous les besoins sont couverts !</strong> Aucun besoin en attente de distribution.
+            </div>
+            <?php endif; ?>
 
             <?php if (!empty($simulated) && $simulation): ?>
             <!-- ========== TABLEAU PAR VILLE ========== -->
