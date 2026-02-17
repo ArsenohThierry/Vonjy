@@ -24,13 +24,53 @@ class BesoinVilleModel {
     }
 
     public function getEstimationBesoinForVille($id){
-        $stmt = $this->db->prepare('SELECT id_ville,nom_ville,SUM(montant_estime) AS estimation_totale FROM v_besoins_detail_vonjy WHERE id_ville = :id GROUP BY id_ville, nom_ville');
+        // Estimation des besoins RESTANTS (après soustraction des allocations et achats)
+        $sql = "SELECT 
+                    b.id_ville,
+                    v.nom_ville,
+                    COALESCE(SUM(
+                        (b.quantite_besoin - COALESCE(alloc.total_attribue, 0) - COALESCE(ach.total_achete, 0)) * p.pu
+                    ), 0) AS estimation_totale
+                FROM besoin_ville_vonjy b
+                JOIN ville_vonjy v ON b.id_ville = v.id
+                JOIN produit_vonjy p ON b.id_produit = p.id
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+                    FROM allocation_don_vonjy
+                    GROUP BY id_besoin
+                ) alloc ON alloc.id_besoin = b.id
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_achetee) AS total_achete
+                    FROM achat_vonjy
+                    GROUP BY id_besoin
+                ) ach ON ach.id_besoin = b.id
+                WHERE b.id_ville = :id
+                  AND (b.quantite_besoin - COALESCE(alloc.total_attribue, 0) - COALESCE(ach.total_achete, 0)) > 0
+                GROUP BY b.id_ville, v.nom_ville";
+        $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getTotalBesoins(){
-        $stmt = $this->db->query('SELECT COALESCE(SUM(b.quantite_besoin * p.pu), 0) AS estimation_totale_besoins FROM besoin_ville_vonjy b JOIN produit_vonjy p ON b.id_produit = p.id;');
+        // Total des besoins RESTANTS (après soustraction des allocations et achats)
+        $sql = "SELECT COALESCE(SUM(
+                    (b.quantite_besoin - COALESCE(alloc.total_attribue, 0) - COALESCE(ach.total_achete, 0)) * p.pu
+                ), 0) AS estimation_totale_besoins 
+                FROM besoin_ville_vonjy b 
+                JOIN produit_vonjy p ON b.id_produit = p.id
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+                    FROM allocation_don_vonjy
+                    GROUP BY id_besoin
+                ) alloc ON alloc.id_besoin = b.id
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_achetee) AS total_achete
+                    FROM achat_vonjy
+                    GROUP BY id_besoin
+                ) ach ON ach.id_besoin = b.id
+                WHERE (b.quantite_besoin - COALESCE(alloc.total_attribue, 0) - COALESCE(ach.total_achete, 0)) > 0";
+        $stmt = $this->db->query($sql);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
