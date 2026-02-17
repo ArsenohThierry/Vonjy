@@ -70,8 +70,8 @@ class DispatchController {
         unset($_SESSION['dispatch_message'], $_SESSION['dispatch_error']);
     }
 
-    /**
-     * Distribue réellement les dons (enregistre en BDD)
+    /**o.l
+     * Displtlppppppppppppppppppp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppribue réellement les dons (enregistre en BDD)
      * POST /dispatch/distribuer
      */
     public function distribuer() {

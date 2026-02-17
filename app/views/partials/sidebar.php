@@ -12,6 +12,7 @@
             <li <?= ($activePage ?? '') === 'dispatch' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/dispatch">Dispatch</a></li>
             <li <?= ($activePage ?? '') === 'produits' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/produits">Produits</a></li>
             <li <?= ($activePage ?? '') === 'categories' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/categorie">Catégories</a></li>
+            <li <?= ($activePage ?? '') === 'categories' ? 'class="active"' : '' ?>><a href="<?= BASE_URL ?>/recapitulation">Recapitulatifs</a></li>
         </ul>
     </nav>
     <div class="sidebar-footer">
