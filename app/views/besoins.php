@@ -215,16 +215,34 @@
     </div>
 
     <style>
+        /* Bouton acheter: augmenter visibilité */
         .btn-acheter {
             background: #3498db;
             color: white;
             border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
+            padding: 8px 14px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 0.95em;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(52,152,219,0.12);
         }
         .btn-acheter:hover { background: #2980b9; }
+
+        /* Rendre la colonne Action toujours visible (sticky) à droite */
+        .table-container { position: relative; }
+        .besoins-table th:last-child,
+        .besoins-table td:last-child {
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            right: 0;
+            background: #fff;
+            z-index: 5;
+            box-shadow: -6px 0 12px rgba(0,0,0,0.04);
+            white-space: nowrap;
+        }
+        /* Assurer que le header de la colonne collée a une plus grande priorité */
+        .besoins-table thead th:last-child { z-index: 6; }
         
         .modal {
             position: fixed;
