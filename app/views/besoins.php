@@ -102,7 +102,6 @@
                             <td>
                                 <div class="description-cell">
                                     <span class="description-titre"><?= $besoin['nom_produit'] ?></span>
-                                    <span class="description-detail">Bruh</span>
                                 </div>
                             </td>
                             <td class="prix-cell"><?= number_format($besoin['pu'], 0, ',', ' ') ?></td>
@@ -119,11 +118,16 @@
                             <td class="date-cell"><?= $besoin['date_besoin'] ?></td>
                             <td>
                                 <?php if (strtolower($besoin['nom_categorie']) !== 'argent'): ?>
-                                    <button class="btn-acheter" 
-                                            onclick="ouvrirModalAchat(<?= $besoin['id'] ?>, '<?= htmlspecialchars($besoin['nom_produit']) ?>', '<?= htmlspecialchars($besoin['nom_ville']) ?>', <?= $besoin['pu'] ?>, <?= $besoin['quantite_restante'] ?? $besoin['quantite_besoin'] ?>)"
-                                            title="Acheter avec dons argent">
-                                        Acheter
-                                    </button>
+                                        <a href="#" style="text-decoration:none"
+                                           class="btn-acheter btn-acheter-link"
+                                           title="Acheter avec dons argent"
+                                           data-id="<?= $besoin['id'] ?>"
+                                           data-produit="<?= htmlspecialchars($besoin['nom_produit']) ?>"
+                                           data-ville="<?= htmlspecialchars($besoin['nom_ville']) ?>"
+                                           data-pu="<?= $besoin['pu'] ?>"
+                                           data-qte="<?= $besoin['quantite_restante'] ?? $besoin['quantite_besoin'] ?>">
+                                            Acheter
+                                        </a>
                                 <?php else: ?>
                                     <span style="color: #999; font-size: 0.85em;">-</span>
                                 <?php endif; ?>
@@ -215,16 +219,34 @@
     </div>
 
     <style>
+        /* Bouton acheter: augmenter visibilité */
         .btn-acheter {
             background: #3498db;
             color: white;
             border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
+            padding: 8px 14px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 0.95em;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(52,152,219,0.12);
         }
         .btn-acheter:hover { background: #2980b9; }
+
+        /* Rendre la colonne Action toujours visible (sticky) à droite */
+        .table-container { position: relative; }
+        .besoins-table th:last-child,
+        .besoins-table td:last-child {
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            right: 0;
+            background: #fff;
+            z-index: 5;
+            box-shadow: -6px 0 12px rgba(0,0,0,0.04);
+            white-space: nowrap;
+        }
+        /* Assurer que le header de la colonne collée a une plus grande priorité */
+        .besoins-table thead th:last-child { z-index: 6; }
         
         .modal {
             position: fixed;
@@ -417,6 +439,19 @@
                 document.getElementById('btn-confirmer-achat').disabled = false;
             });
         }
+
+        // Délégué: ouvrir la modal depuis les liens 'Acheter' (évite les onclick inline en prod)
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-acheter-link');
+            if (!btn) return;
+            e.preventDefault();
+            const id = btn.getAttribute('data-id');
+            const produit = btn.getAttribute('data-produit');
+            const ville = btn.getAttribute('data-ville');
+            const pu = parseFloat(btn.getAttribute('data-pu')) || 0;
+            const qte = parseInt(btn.getAttribute('data-qte')) || 0;
+            ouvrirModalAchat(id, produit, ville, pu, qte);
+        });
 
         function numberFormat(num) {
             return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');

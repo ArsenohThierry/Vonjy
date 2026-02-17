@@ -56,11 +56,24 @@ class DispatchController
     {
         $dispatchModel = new DispatchModel(Flight::db());
         
+<<<<<<< HEAD
+=======
+        // Récupérer le mode de dispatch depuis le formulaire
+        $mode = $_POST['mode'] ?? 'date';
+        if (!in_array($mode, ['date', 'petit'])) {
+            $mode = 'date';
+        }
+        
+>>>>>>> dev_aina
         // Récupérer les valeurs initiales AVANT simulation
         $totalDonsInitial = $dispatchModel->getTotalDons();
         $totalBesoinsInitial = $dispatchModel->getTotalBesoins();
         
+<<<<<<< HEAD
         $simulation = $dispatchModel->simulerDispatch();
+=======
+        $simulation = $dispatchModel->simulerDispatch($mode);
+>>>>>>> dev_aina
         $hasDistribution = $dispatchModel->hasDistribution();
         $canDistribute = $dispatchModel->canDistribute();
         $historique = $dispatchModel->getHistoriqueDistributions();
@@ -73,8 +86,15 @@ class DispatchController
             ? round(($totalDonsApresSimulation / $totalBesoinsApresSimulation) * 100, 1) 
             : ($totalDonsApresSimulation > 0 ? 100 : 0);
 
+<<<<<<< HEAD
         // Récupérer les besoins pour le tableau
         $besoins = $dispatchModel->getAllBesoinsOrderByDate();
+=======
+        // Récupérer les besoins pour le tableau selon le mode
+        $besoins = ($mode === 'petit') 
+            ? $dispatchModel->getAllBesoinsOrderBySmallest() 
+            : $dispatchModel->getAllBesoinsOrderByDate();
+>>>>>>> dev_aina
 
         $this->app->render('dispatch', [
             'activePage' => 'dashboard',
@@ -88,6 +108,7 @@ class DispatchController
             'tauxCouvertureInitial' => $totalBesoinsInitial > 0 ? round(($totalDonsInitial / $totalBesoinsInitial) * 100, 1) : 0,
             'simulation' => $simulation,
             'simulated' => true,
+            'modeDispatch' => $mode,
             'hasDistribution' => $hasDistribution,
             'canDistribute' => $canDistribute,
             'historique' => $historique,
@@ -98,18 +119,28 @@ class DispatchController
         unset($_SESSION['dispatch_message'], $_SESSION['dispatch_error']);
     }
 
-    /**o.l
-     * Displtlppppppppppppppppppp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppribue réellement les dons (enregistre en BDD)
+    /**
+     * Distribue réellement les dons (enregistre en BDD)
      * POST /dispatch/distribuer
      */
     public function distribuer()
     {
         $dispatchModel = new DispatchModel(Flight::db());
+<<<<<<< HEAD
+=======
+        
+        // Récupérer le mode de dispatch depuis le formulaire
+        $mode = $_POST['mode'] ?? 'date';
+        if (!in_array($mode, ['date', 'petit'])) {
+            $mode = 'date';
+        }
+>>>>>>> dev_aina
 
         try {
-            $simulation = $dispatchModel->distribuerDons();
+            $simulation = $dispatchModel->distribuerDons($mode);
             $nbAlloc = count(array_filter($simulation['allocations'], fn($a) => $a['quantite_attribuee'] > 0));
-            $_SESSION['dispatch_message'] = "Distribution effectuée ! {$nbAlloc} allocation(s) enregistrée(s).";
+            $modeLabel = ($mode === 'petit') ? 'petit à petit' : 'par date';
+            $_SESSION['dispatch_message'] = "Distribution effectuée ({$modeLabel}) ! {$nbAlloc} allocation(s) enregistrée(s).";
         } catch (\Exception $e) {
             $_SESSION['dispatch_error'] = $e->getMessage();
         }
