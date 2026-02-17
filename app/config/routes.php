@@ -79,7 +79,7 @@ $router->group('', function (Router $router) use ($app) {
 	$router->get('/api/achat/argent', [AchatController::class, 'getArgentDispo']);
 
 
-	$router->get('/recapitulation', );
+	// $router->get('/recapitulation', );
 
 
 }, [SecurityHeadersMiddleware::class]);
