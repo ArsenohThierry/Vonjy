@@ -79,7 +79,7 @@ $router->group('', function (Router $router) use ($app) {
 	$router->get('/api/achat/argent', [AchatController::class, 'getArgentDispo']);
 
 	//prochain routage
-
+	// atao eto routage manaraka
 
 	// $router->get('/recapitulation', );
 
